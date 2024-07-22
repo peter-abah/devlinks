@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const createClient = () => {
   const cookieStore = cookies();
@@ -24,6 +25,19 @@ export const createClient = () => {
           }
         },
       },
-    },
+    }
   );
+};
+
+// Redirects to login page if user is not authenticated
+export const protectRoute = async () => {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
 };

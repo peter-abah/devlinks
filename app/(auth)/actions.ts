@@ -2,9 +2,9 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { FormSchema } from "./schema";
+import { LoginFormData, SignupFormData } from "./schema";
 
-export const signIn = async ({ email, password }: FormSchema) => {
+export const signIn = async ({ email, password }: LoginFormData) => {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -14,14 +14,13 @@ export const signIn = async ({ email, password }: FormSchema) => {
 
   if (error) {
     // TODO: different messsages for different errors
-    console.log({ error });
     return [{ field: "root.server", message: "Unable to login" }];
   }
 
   return redirect("/dashboard");
 };
 
-export const signUp = async ({ email, password }: FormSchema) => {
+export const signUp = async ({ email, password }: SignupFormData) => {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signUp({
