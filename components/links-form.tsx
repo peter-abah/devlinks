@@ -1,3 +1,4 @@
+import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
 import LinksEmptyImage from "@/public/images/links-empty.png";
 import Image from "next/image";
@@ -18,7 +19,9 @@ export default function LinksForm() {
             + Add new link
           </Button>
 
-          <EmptyState />
+          <LinkInput linkNo={2} />
+          <LinkInput linkNo={4} />
+          <LinkInput linkNo={6} />
         </div>
       </div>
 
