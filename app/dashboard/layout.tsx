@@ -7,9 +7,9 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
   await protectRoute();
 
   return (
-    <div>
+    <div className="min-h-screen w-full max-w-screen-2xl mx-auto stack">
       <Navbar />
-      <div className="px-6 flex gap-6">
+      <div className="px-4 pb-4 md:px-6 md:pb-6 flex gap-6 grow">
         <PhonePreview />
         {children}
       </div>
