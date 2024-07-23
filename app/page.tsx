@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default async function Index() {
-  return <div>Home</div>;
+  return redirect("/dashboard");
 }
