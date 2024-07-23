@@ -1,11 +1,59 @@
+"use client";
+
 import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
+import { Platforms } from "@/lib/types";
 import LinksEmptyImage from "@/public/images/links-empty.png";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
+
+const formSchema = z.object({
+  links: z
+    .object({
+      id: z.string().optional(),
+      platform: z.nativeEnum(Platforms),
+      url: z
+        .string()
+        .min(1, { message: "Can't be empty" })
+        .url({ message: "Please check the URL" }),
+    })
+    .array(),
+  deletedLinksIDs: z.object({ id: z.string() }).array(),
+});
+export type FormSchema = z.infer<typeof formSchema>;
 
 export default function LinksForm() {
+  const { register, handleSubmit, control, getValues } = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    mode: "onTouched",
+  });
+  const {
+    fields: linkFields,
+    append: appendLink,
+    remove: removeLink,
+  } = useFieldArray({ name: "links", control });
+  const { fields: deletedLinksIDsFields, append: appendDeletedLinkID } = useFieldArray({
+    name: "deletedLinksIDs",
+    control,
+  });
+
+  const onRemoveLink = (index: number) => {
+    const { id } = getValues("links")[index];
+    if (id) {
+      appendDeletedLinkID({ id });
+    }
+    removeLink(index);
+  };
+
+  const isLinksChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;
+
   return (
-    <form className="bg-white grow rounded-xl stack">
+    <form
+      onSubmit={handleSubmit((data) => console.log(data))}
+      className="bg-white grow rounded-xl stack"
+    >
       <div className="p-6 md:p-10 stack gap-6 grow">
         <header className="space-y-2">
           <h1 className="text-2xl md:text-[32px] font-bold">Customize your links</h1>
@@ -15,18 +63,31 @@ export default function LinksForm() {
         </header>
 
         <div className="stack gap-6 grow">
-          <Button variant="outline" className="w-full font-semibold">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full font-semibold"
+            onClick={() => appendLink({} as any)}
+          >
             + Add new link
           </Button>
-
-          <LinkInput linkNo={2} />
-          <LinkInput linkNo={4} />
-          <LinkInput linkNo={6} />
+          {linkFields.map((field, index) => (
+            <LinkInput
+              index={index}
+              key={field.id}
+              onRemove={() => onRemoveLink(index)}
+              register={register}
+              control={control}
+            />
+          ))}
+          {deletedLinksIDsFields.map((field, index) => (
+            <input type="hidden" {...register(`deletedLinksIDs.${index}`)} />
+          ))}
         </div>
       </div>
 
       <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t">
-        <Button disabled type="submit" className="w-full md:w-auto">
+        <Button disabled={!isLinksChanged} type="submit" className="w-full md:w-auto">
           Save
         </Button>
       </div>

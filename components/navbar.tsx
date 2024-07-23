@@ -2,13 +2,13 @@
 
 import DevlinksLogo from "@/components/icons/devlinks-logo";
 import DevlinksLogoText from "@/components/icons/devlinks-logo-text";
+import Eye from "@/components/icons/eye";
 import LinkIcon from "@/components/icons/link";
 import UserIcon from "@/components/icons/user";
 import NavLink from "@/components/nav-link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Eye from "./icons/eye";
 
 const navLinkClassNames = {
   default: "gap-2 flex items-center px-7 py-3 rounded-lg font-semibold hover:text-primary",
