@@ -50,9 +50,9 @@ export type ProfileFormData = Omit<z.infer<typeof formSchema>, "profilePicture">
 
 export default function ProfileForm() {
   const { toast } = useToast();
-  const { profilePicture: storeProfilePicture, ...profile } = useStoreContext(
-    (state) => state.profile
-  );
+  const updateState = useStoreContext((state) => state.updateState);
+  const serverProfile = useStoreContext((state) => state.serverProfile);
+  const { profilePicture: _, ...serverProfileWithoutImage } = serverProfile || {};
 
   const {
     register,
@@ -62,17 +62,15 @@ export default function ProfileForm() {
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
-    defaultValues: profile,
+    defaultValues: serverProfileWithoutImage,
   });
 
   const profilePicture = (watch("profilePicture") as FileList | undefined)?.item(0);
-  const isStoreImageValid = storeProfilePicture && "url" in storeProfilePicture;
   const profilePicturePreview = profilePicture && {
     url: URL.createObjectURL(profilePicture),
     name: profilePicture.name,
   };
-  const storeImagePreview = isStoreImageValid ? storeProfilePicture : undefined;
-  const imgPreviewToUse = profilePicturePreview || storeImagePreview;
+  const imgPreviewToUse = profilePicturePreview || serverProfile?.profilePicture;
 
   useEffect(() => {
     return () => {
@@ -95,7 +93,7 @@ export default function ProfileForm() {
 
       updateProfile({
         ...value,
-        profilePicture: url ? { url, name: profilePicture.name } : storeProfilePicture,
+        profilePicture: url ? { url, name: profilePicture.name } : serverProfile?.profilePicture,
       });
     });
 
@@ -140,7 +138,7 @@ export default function ProfileForm() {
     }
 
     if (profileData) {
-      updateProfile(profileData);
+      updateState("serverProfile", profileData);
       toast({ description: "Profile updated" });
     }
   };

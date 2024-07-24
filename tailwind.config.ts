@@ -66,6 +66,9 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        xl: "0px 0px 32px 0px rgba(0, 0, 0, 0.10)",
+      },
       fontFamily: {
         sans: ["var(--font-instrument-sans)", ...fontFamily.sans],
       },

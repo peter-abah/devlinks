@@ -4,25 +4,23 @@ import { StoreState } from "@/app/dashboard/store";
 import { useStoreContext } from "@/app/dashboard/store-context";
 import PlatformIcon from "@/components/icons/platform-icons";
 import PreviewFrame from "@/components/phone-preview/preview-frame";
-import { Platforms } from "@/lib/types";
-import { titleCase } from "@/lib/utils";
+import { PLATFORM_COLORS, titleCase } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 
 const NO_OF_LINKS = 5;
-const PLATFORM_COLORS: Record<Platforms, string> = {
-  github: "#1A1A1A",
-  youtube: "#EE3939",
-  linkedin: "#2D68FF",
-  facebook: "#1877F2",
-  frontend_mentor: "#6ABECD",
-};
 type TLink = StoreState["links"][0];
 
 export default function PhonePreview() {
   const links = useStoreContext((state) => state.links);
-  const paddedLinks = [...links, ...Array(NO_OF_LINKS)].slice(0, 5) as Array<TLink | undefined>;
+  const isLinksChanged = useStoreContext((state) => state.isLinksChanged);
+  const serverLinks = useStoreContext((state) => state.serverLinks);
+
+  const linksToUse = links.length > 0 || isLinksChanged ? links : serverLinks || [];
+  const paddedLinks = [...linksToUse, ...Array(NO_OF_LINKS)].slice(0, 5) as Array<
+    TLink | undefined
+  >;
 
   return (
     <div
@@ -60,36 +58,47 @@ function LinkPreview({ link }: { link?: TLink }) {
 }
 
 function ProfilePreview() {
-  const { first_name, last_name, profilePicture, email } = useStoreContext(
-    (state) => state.profile
-  );
-  const name = [first_name, last_name].join(" ");
-  const isFile = profilePicture && !("url" in profilePicture);
-  const imgURL = isFile ? URL.createObjectURL(profilePicture) : profilePicture?.url;
+  const { profile, serverProfile } = useStoreContext(({ profile, serverProfile }) => ({
+    profile,
+    serverProfile,
+  }));
+  const profileToUse = profile.id ? profile : serverProfile;
+
+  const name = [profileToUse?.first_name, profileToUse?.last_name].join(" ");
+  const convertedPicture =
+    profile.profilePicture instanceof File
+      ? {
+          url: URL.createObjectURL(profile.profilePicture),
+          name: profile.profilePicture.name,
+          isFile: true,
+        }
+      : profile.profilePicture; //as {url: string, name: string} | undefined;
+
+  const picture = convertedPicture || serverProfile?.profilePicture;
 
   useEffect(() => {
     return () => {
-      if (!imgURL) return;
+      if (!convertedPicture?.url) return;
 
       // revoke object urls to prevent memory leaks
-      URL.revokeObjectURL(imgURL);
+      URL.revokeObjectURL(convertedPicture.url);
     };
-  }, [imgURL]);
+  }, [convertedPicture?.url]);
 
   return (
     <div className="stack items-center z-10">
       <div className="w-24 shrink-0 mb-[25px] aspect-square rounded-full relative bg-no-preview overflow-hidden">
-        {imgURL && <Image src={imgURL} fill alt={first_name || profilePicture?.name || ""} />}
+        {picture?.url && <Image src={picture.url} fill alt={name || picture.name || ""} />}
       </div>
 
-      {first_name ? (
+      {name ? (
         <p className="text-lg mb-2 font-semibold">{name}</p>
       ) : (
         <div className="w-40 mb-[13px] h-4 bg-no-preview rounded-full">{/* full name */}</div>
       )}
 
-      {email ? (
-        <p className="text-sm text-gray">{email}</p>
+      {profileToUse?.email ? (
+        <p className="text-sm text-gray">{profileToUse.email}</p>
       ) : (
         <div className="w-[72px] h-2 rounded-full rounded-ful bg-no-preview">{/* email */}</div>
       )}

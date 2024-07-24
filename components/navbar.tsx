@@ -55,7 +55,10 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        <Link href="preview" className={cn(buttonVariants({ variant: "outline" }), "px-4 md:px-7")}>
+        <Link
+          href="/dashboard/preview"
+          className={cn(buttonVariants({ variant: "outline" }), "px-4 md:px-7")}
+        >
           <Eye className="md:hidden" />
           <span className="sr-only md:not-sr-only">Preview</span>
         </Link>

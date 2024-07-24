@@ -8,4 +8,6 @@ export enum Platforms {
 
 export const PLATFORMS = Object.values(Platforms);
 
-export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
+export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;

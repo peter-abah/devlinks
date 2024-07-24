@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { defaultUrl } from "@/lib/utils";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -6,10 +7,6 @@ const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-instrument-sans",
 });
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),

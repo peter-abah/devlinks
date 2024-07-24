@@ -35,7 +35,10 @@ export type LinksFormData = FormSchema;
 export default function LinksForm() {
   const { toast } = useToast();
   const updateLinks = useStoreContext((state) => state.updateLinks);
-  const links = useStoreContext((state) => state.links);
+  const updateState = useStoreContext((state) => state.updateState);
+  const { serverLinks, links, isLinksChanged } = useStoreContext(
+    ({ links, serverLinks, isLinksChanged }) => ({ serverLinks, links, isLinksChanged })
+  );
 
   const {
     register,
@@ -47,7 +50,7 @@ export default function LinksForm() {
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
-    defaultValues: { links },
+    defaultValues: { links: links.length > 0 || isLinksChanged ? links : serverLinks },
   });
 
   const {
@@ -76,6 +79,7 @@ export default function LinksForm() {
       appendDeletedLinkID({ id });
     }
     removeLink(index);
+    updateState("isLinksChanged", true);
   };
 
   const onSubmit = async (formData: FormSchema) => {
@@ -87,11 +91,11 @@ export default function LinksForm() {
       return;
     }
 
-    if (newLinks) updateLinks(newLinks);
+    if (newLinks) updateState("serverLinks", newLinks);
     toast({ description: "Your changes have been successfully saved!" });
   };
 
-  const isLinksChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;
+  const isLinksFieldsChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white grow rounded-xl stack max-h-full">
@@ -137,7 +141,7 @@ export default function LinksForm() {
 
       <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t shrink-0">
         <Button
-          disabled={!isLinksChanged || isSubmitting}
+          disabled={!isLinksFieldsChanged || isSubmitting}
           type="submit"
           className="w-full md:w-auto"
         >
