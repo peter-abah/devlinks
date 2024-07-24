@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import Floppy from "./icons/floppy";
 
 const formSchema = z.object({
   links: z
@@ -87,12 +88,12 @@ export default function LinksForm() {
 
     const { data: newLinks, error } = await updateLinksToDB(formData);
     if (error) {
-      toast({ description: error.message });
+      toast({ description: error.message, variant: "destructive" });
       return;
     }
 
     if (newLinks) updateState("serverLinks", newLinks);
-    toast({ description: "Your changes have been successfully saved!" });
+    toast({ description: "Your changes have been successfully saved!", icon: <Floppy /> });
   };
 
   const isLinksFieldsChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;

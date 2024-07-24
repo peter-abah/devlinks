@@ -1,4 +1,5 @@
 "use client";
+import Link from "./icons/link";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 
@@ -10,7 +11,10 @@ export default function ShareLinkButton({ link }: Props) {
 
   const shareLink = () => {
     navigator.clipboard.writeText(link);
-    toast({ description: "The link has been copied to your clipboard!" });
+    toast({
+      description: "The link has been copied to your clipboard!",
+      icon: <Link color="#737373" />,
+    });
   };
 
   return (

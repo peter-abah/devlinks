@@ -1,5 +1,5 @@
 "use client";
-// TODO: style toast, diff style for error toast
+
 import PlatformIcon from "@/components/icons/platform-icons";
 import { Tables } from "@/lib/types/supabase";
 import { PLATFORM_COLORS, padArray, titleCase } from "@/lib/utils";

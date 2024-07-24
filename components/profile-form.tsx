@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import isEmail from "validator/lib/isEmail";
 import * as z from "zod";
+import Floppy from "./icons/floppy";
 
 const isServer = typeof window === "undefined";
 const MEGABYTE = 1024 * 1024;
@@ -103,7 +104,7 @@ export default function ProfileForm() {
   const uploadImage = async (profilePicture: FormSchema["profilePicture"]) => {
     const file = (profilePicture as FileList).item(0);
     if (!file) {
-      toast({ description: "Upload profile image" });
+      toast({ description: "Upload profile image", variant: "destructive" });
       return { error: new Error() };
     }
 
@@ -113,7 +114,7 @@ export default function ProfileForm() {
       .upload(nanoid(), file);
 
     if (error || !imageData) {
-      toast({ description: "Error uploading image" });
+      toast({ description: "Error uploading image", variant: "destructive" });
       return { error };
     }
 
@@ -132,12 +133,12 @@ export default function ProfileForm() {
     });
 
     if (error) {
-      toast({ description: error.message });
+      toast({ description: error.message, variant: 'destructive' });
     }
 
     if (profileData) {
       updateState("serverProfile", profileData);
-      toast({ description: "Profile updated" });
+      toast({ description: "Your changes have been successfully saved!", icon: <Floppy /> });
     }
   };
 
