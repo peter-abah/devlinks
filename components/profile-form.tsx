@@ -84,7 +84,9 @@ export default function ProfileForm() {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => console.log(data))}
+      onSubmit={handleSubmit((data) =>
+        console.log({ data, MSG: "IN PROFILEEEEEEEEEEEEEEEEEEEEEE" })
+      )}
       className="bg-white grow rounded-xl stack max-h-full"
     >
       <div className="p-6 md:p-10 stack gap-6 grow max-h-full">

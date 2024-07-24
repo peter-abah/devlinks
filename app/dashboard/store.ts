@@ -8,7 +8,7 @@ interface Profile {
   profilePicture: File;
 }
 
-interface StoreProps {
+export interface StoreProps {
   links: Partial<Tables<"links">>[];
   profile: Partial<Profile>;
 }

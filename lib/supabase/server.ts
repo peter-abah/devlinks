@@ -31,6 +31,7 @@ export const createClient = () => {
 };
 
 // Redirects to login page if user is not authenticated
+// Returns user if authenticated
 export const protectRoute = async () => {
   const supabase = createClient();
 
@@ -41,4 +42,6 @@ export const protectRoute = async () => {
   if (!user) {
     return redirect("/login");
   }
+
+  return user;
 };

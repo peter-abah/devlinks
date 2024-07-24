@@ -4,6 +4,7 @@ import { StoreState } from "@/app/dashboard/store";
 import { useStoreContext } from "@/app/dashboard/store-context";
 import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
+import { updateLinks as updateLinksToDB } from "@/lib/supabase/actions";
 import { Platforms } from "@/lib/types";
 import LinksEmptyImage from "@/public/images/links-empty.png";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,11 +12,12 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import { useToast } from "./ui/use-toast";
 
 const formSchema = z.object({
   links: z
     .object({
-      id: z.string().optional(),
+      id: z.number().optional(),
       platform: z.nativeEnum(Platforms),
       url: z
         .string()
@@ -23,15 +25,28 @@ const formSchema = z.object({
         .url({ message: "Please check the URL" }),
     })
     .array(),
-  deletedLinksIDs: z.object({ id: z.string() }).array(),
+  deletedLinksIDs: z.object({ id: z.number() }).array(),
 });
 export type FormSchema = z.infer<typeof formSchema>;
+export type LinksFormData = FormSchema;
 
 // TODO: Weird overflow at the bottom of page, increases when a new item is added
 export default function LinksForm() {
-  const { register, handleSubmit, control, getValues, watch } = useForm<FormSchema>({
+  const { toast } = useToast();
+  const updateLinks = useStoreContext((state) => state.updateLinks);
+  const links = useStoreContext((state) => state.links);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    getValues,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
+    defaultValues: { links },
   });
 
   const {
@@ -43,8 +58,6 @@ export default function LinksForm() {
     name: "deletedLinksIDs",
     control,
   });
-
-  const updateLinks = useStoreContext((state) => state.updateLinks);
 
   useEffect(() => {
     const subscription = watch(({ links }, { name, type }) => {
@@ -64,8 +77,17 @@ export default function LinksForm() {
     removeLink(index);
   };
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
+  const onSubmit = async (formData: FormSchema) => {
+    if (isSubmitting) return;
+
+    const { data: newLinks, error } = await updateLinksToDB(formData);
+    if (error) {
+      toast({ description: error.message });
+      return;
+    }
+
+    if (newLinks) updateLinks(newLinks);
+    toast({ description: "Your changes have been successfully saved!" });
   };
 
   const isLinksChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;
@@ -113,7 +135,11 @@ export default function LinksForm() {
       </div>
 
       <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t shrink-0">
-        <Button disabled={!isLinksChanged} type="submit" className="w-full md:w-auto">
+        <Button
+          disabled={!isLinksChanged || isSubmitting}
+          type="submit"
+          className="w-full md:w-auto"
+        >
           Save
         </Button>
       </div>

@@ -1,14 +1,14 @@
 "use client";
 import { PropsWithChildren, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
-import { Store, StoreState, createStore } from "./store";
+import { Store, StoreProps, StoreState, createStore } from "./store";
 
 export const StoreContext = createContext<Store | null>(null);
 
-export function StoreProvider({ children }: PropsWithChildren) {
+export function StoreProvider({ children, ...props }: PropsWithChildren<Partial<StoreProps>>) {
   const storeRef = useRef<Store>();
   if (!storeRef.current) {
-    storeRef.current = createStore();
+    storeRef.current = createStore(props);
   }
   return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>;
 }

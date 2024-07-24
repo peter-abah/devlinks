@@ -80,6 +80,7 @@ export default function LinkInput({ index, onRemove, register, control }: Props)
       <div className="space-y-1">
         <Label htmlFor={`url-${index}`}>Link</Label>
         <InputWithIcon
+          type="url"
           id={`url-${index}`}
           icon={<LinkIcon width={16} height={16} className="text-gray" />}
           placeholder={LINK_PLACEHOLDERS[currentPlatForm]}

@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={instrumentSans.variable}>
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col">{children}</main>
+        <Toaster />
       </body>
     </html>
   );
