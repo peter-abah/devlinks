@@ -7,3 +7,5 @@ export enum Platforms {
 }
 
 export const PLATFORMS = Object.values(Platforms);
+
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }

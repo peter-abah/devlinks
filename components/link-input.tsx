@@ -34,7 +34,7 @@ export default function LinkInput({ index, onRemove, register, control }: Props)
     }) ?? "default";
 
   return (
-    <div className="p-5 space-y-3 bg-gray-light rounded-xl">
+    <div className="p-5 space-y-3 bg-gray-light rounded-xl shrink-0">
       <header className="flex justify-between items-center">
         <h3 className="flex gap-2 items-center">
           <Equal />

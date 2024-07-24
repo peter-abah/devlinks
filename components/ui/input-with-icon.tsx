@@ -22,7 +22,7 @@ const InputWithIcon = forwardRef<HTMLInputElement, Props>(
           ref={ref}
         />
         {errorMessage && (
-          <span className="absolute z-10 top-1/2 -translate-y-1/2 right-4 text-xs text-destructive">
+          <span className="absolute bg-white p-1 z-10 top-1/2 -translate-y-1/2 right-4 text-xs text-destructive">
             {errorMessage}
           </span>
         )}

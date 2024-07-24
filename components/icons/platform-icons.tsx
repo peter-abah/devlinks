@@ -3,7 +3,7 @@ import FrontendMentor from "@/components/icons/frontend-mentor";
 import Github from "@/components/icons/github";
 import Linkedin from "@/components/icons/linkedin";
 import Youtube from "@/components/icons/youtube";
-import { Platforms } from "@/lib/types";
+import { Platforms } from "@/lib";
 import { ReactNode, SVGProps } from "react";
 
 interface IconProps extends SVGProps<SVGSVGElement> {}

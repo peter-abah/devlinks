@@ -35,6 +35,7 @@
     --gray-dark: 0 0% 20%;
     --gray: 0 0% 45%;
     --gray-light: 0 0% 98%;
+    --no-preview: 0 0% 93%;
   }
 
   .dark {
@@ -68,6 +69,8 @@
 @layer base {
   * {
     @apply border-border;
+    min-width: 0;
+    min-height: 0;
   }
   body {
     @apply bg-background text-foreground;

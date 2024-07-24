@@ -1,11 +1,14 @@
 "use client";
 
+import { StoreState } from "@/app/dashboard/store";
+import { useStoreContext } from "@/app/dashboard/store-context";
 import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
 import { Platforms } from "@/lib/types";
 import LinksEmptyImage from "@/public/images/links-empty.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -24,11 +27,13 @@ const formSchema = z.object({
 });
 export type FormSchema = z.infer<typeof formSchema>;
 
+// TODO: Weird overflow at the bottom of page, increases when a new item is added
 export default function LinksForm() {
-  const { register, handleSubmit, control, getValues } = useForm<FormSchema>({
+  const { register, handleSubmit, control, getValues, watch } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
   });
+
   const {
     fields: linkFields,
     append: appendLink,
@@ -38,6 +43,18 @@ export default function LinksForm() {
     name: "deletedLinksIDs",
     control,
   });
+
+  const updateLinks = useStoreContext((state) => state.updateLinks);
+
+  useEffect(() => {
+    const subscription = watch(({ links }, { name, type }) => {
+      if (!links) return;
+      const linksToPreview = links.filter((link) => !!link) as StoreState["links"];
+      updateLinks(linksToPreview);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const onRemoveLink = (index: number) => {
     const { id } = getValues("links")[index];
@@ -52,10 +69,10 @@ export default function LinksForm() {
   return (
     <form
       onSubmit={handleSubmit((data) => console.log(data))}
-      className="bg-white grow rounded-xl stack"
+      className="bg-white grow rounded-xl stack max-h-full"
     >
-      <div className="p-6 md:p-10 stack gap-6 grow">
-        <header className="space-y-2">
+      <div className="p-6 md:p-10 stack gap-6 grow max-h-full">
+        <header className="space-y-2 shrink-0">
           <h1 className="text-2xl md:text-[32px] font-bold">Customize your links</h1>
           <p className="text-gray">
             Add/edit/remove links below and then share all your profiles with the world!
@@ -66,27 +83,31 @@ export default function LinksForm() {
           <Button
             type="button"
             variant="outline"
-            className="w-full font-semibold"
+            className="w-full font-semibold shrink-0"
             onClick={() => appendLink({} as any)}
           >
             + Add new link
           </Button>
-          {linkFields.map((field, index) => (
-            <LinkInput
-              index={index}
-              key={field.id}
-              onRemove={() => onRemoveLink(index)}
-              register={register}
-              control={control}
-            />
-          ))}
+
+          <div className="grow space-y-6 overflow-auto">
+            {linkFields.map((field, index) => (
+              <LinkInput
+                index={index}
+                key={field.id}
+                onRemove={() => onRemoveLink(index)}
+                register={register}
+                control={control}
+              />
+            ))}
+          </div>
+
           {deletedLinksIDsFields.map((field, index) => (
             <input type="hidden" {...register(`deletedLinksIDs.${index}`)} />
           ))}
         </div>
       </div>
 
-      <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t">
+      <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t shrink-0">
         <Button disabled={!isLinksChanged} type="submit" className="w-full md:w-auto">
           Save
         </Button>
