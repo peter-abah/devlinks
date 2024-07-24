@@ -23,7 +23,10 @@ export const PLATFORM_COLORS: Record<Platforms, string> = {
   youtube: "#EE3939",
   linkedin: "#2D68FF",
   facebook: "#1877F2",
-  frontend_mentor: "#6ABECD",
+  frontend_mentor: "#338a99",
+  codewars: "#8A1A50",
+  freeCodeCamp: "#302267",
+  "dev.to": "Dark Grey",
 };
 
 export const defaultUrl = process.env.VERCEL_URL

@@ -4,6 +4,9 @@ export enum Platforms {
   LINKEDIN = "linkedin",
   FACEBOOK = "facebook",
   FRONTEND_MENTOR = "frontend_mentor",
+  DEV_TO = "dev.to",
+  CODEWARS = "codewars",
+  FREE_CODE_CAMP = "freeCodeCamp",
 }
 
 export const PLATFORMS = Object.values(Platforms);

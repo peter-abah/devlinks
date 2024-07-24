@@ -20,8 +20,6 @@ import * as z from "zod";
 const isServer = typeof window === "undefined";
 const MEGABYTE = 1024 * 1024;
 
-// TODO: reset forms
-// TODO: Save form data between page switches
 const formSchema = z.object({
   id: z.number().optional(),
   profilePicture: isServer

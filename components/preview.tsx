@@ -7,7 +7,6 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-// TODO: fix contrast of platform links
 interface Props {
   links: Tables<"links">[];
   profile?: Tables<"profiles"> & { profilePicture: { url: string; name: string } };

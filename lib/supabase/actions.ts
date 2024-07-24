@@ -17,8 +17,7 @@ export const signIn = async ({ email, password }: LoginFormData) => {
   });
 
   if (error) {
-    // TODO: different messsages for different errors
-    return [{ field: "root.server", message: "Unable to login" }];
+    return [{ field: "root.server", message: "Unable to login, password or email incorrect" }];
   }
 
   return redirect("/dashboard");
@@ -33,8 +32,7 @@ export const signUp = async ({ email, password }: SignupFormData) => {
   });
 
   if (error) {
-    // TODO: different messsages for different errors
-    return [{ field: "root.server", message: "Unable to login" }];
+    return [{ field: "root.server", message: "Unable to signup." }];
   }
 
   return redirect("/dashboard");
