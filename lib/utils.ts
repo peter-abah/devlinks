@@ -29,3 +29,5 @@ export const PLATFORM_COLORS: Record<Platforms, string> = {
 export const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
+
+export const PROFILE_BASE_URL = `${defaultUrl}/u/profile`;

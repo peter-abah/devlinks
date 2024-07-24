@@ -3,11 +3,9 @@
 import Preview from "@/components/preview";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { defaultUrl } from "@/lib/utils";
+import { PROFILE_BASE_URL } from "@/lib/utils";
 import Link from "next/link";
 import { useStoreContext } from "../store-context";
-
-const PREVIEW_BASE_URL = `${defaultUrl}/preview`;
 
 export default function Page() {
   const { toast } = useToast();
@@ -25,7 +23,7 @@ export default function Page() {
       toast({ description: "You have to login" });
       return;
     }
-    navigator.clipboard.writeText(`${PREVIEW_BASE_URL}/${user.id}`);
+    navigator.clipboard.writeText(`${PROFILE_BASE_URL}/${user.id}`);
     toast({ description: "The link has been copied to your clipboard!" });
   };
   return (
