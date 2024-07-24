@@ -26,8 +26,8 @@ export default function Preview({ links, profile }: Props) {
           )}
         </div>
 
-        <p className="text-[32px] mb-2 font-bold">{name || "No name"}</p>
-        <p className="text-gray">{profile?.email || "no email"}</p>
+        <p className="text-[32px] mb-2 font-bold text-center">{name || "No name"}</p>
+        <p className="text-gray text-center">{profile?.email || "no email"}</p>
       </div>
 
       <ul className="stack gap-5 w-full">

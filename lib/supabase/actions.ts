@@ -88,7 +88,7 @@ export const updateProfile = async (formData: ProfileFormData) => {
   let res;
 
   if (formData.id) {
-    res = await client.from("profiles").update(formData).select();
+    res = await client.from("profiles").update(formData).eq("user_id", user.id).select();
     if (res.error) {
       return { error: { message: "An error occured, could not update profile." } };
     }

@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import isEmail from "validator/lib/isEmail";
 import * as z from "zod";
 import Floppy from "./icons/floppy";
+import Spinner from "./spinner";
 
 const isServer = typeof window === "undefined";
 const MEGABYTE = 1024 * 1024;
@@ -24,13 +25,11 @@ const MEGABYTE = 1024 * 1024;
 const formSchema = z.object({
   id: z.number().optional(),
   profilePicture: isServer
-    ? z.unknown()
+    ? z.unknown().optional()
     : z
         .instanceof(FileList, { message: "Choose profile picture" })
-        .refine((images) => images?.length >= 1, {
-          message: "Choose profile picture",
-        })
-        .refine((images) => (images.item(0)?.size || 0) < MEGABYTE, {
+        .optional()
+        .refine((images) => (images?.item(0)?.size || 0) < MEGABYTE, {
           message: "Must be less than one megabyte.",
         }),
   first_name: z.string().min(1, { message: "Can't be empty." }),
@@ -58,6 +57,7 @@ export default function ProfileForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setError,
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
@@ -104,8 +104,12 @@ export default function ProfileForm() {
   const uploadImage = async (profilePicture: FormSchema["profilePicture"]) => {
     const file = (profilePicture as FileList).item(0);
     if (!file) {
-      toast({ description: "Upload profile image", variant: "destructive" });
-      return { error: new Error() };
+      if (!serverProfile?.profilePicture) {
+        setError("profilePicture", { type: "custom", message: "Choose profile picture" });
+        return { error: new Error() };
+      }
+
+      return {};
     }
 
     const browserClient = createClient();
@@ -125,15 +129,15 @@ export default function ProfileForm() {
     if (isSubmitting) return;
 
     const { data: imageData, error: imageError } = await uploadImage(profilePicture);
-    if (imageError || !imageData) return;
+    if (imageError) return;
 
     const { data: profileData, error } = await updateProfileToDB({
       ...data,
-      profile_image_path: imageData.path,
+      profile_image_path: imageData?.path || serverProfile!.profile_image_path,
     });
 
     if (error) {
-      toast({ description: error.message, variant: 'destructive' });
+      toast({ description: error.message, variant: "destructive" });
     }
 
     if (profileData) {
@@ -244,7 +248,8 @@ export default function ProfileForm() {
       </div>
 
       <div className="py-4 px-4 md:py-6 md:px-10 flex justify-end border-t shrink-0">
-        <Button disabled={isSubmitting} type="submit" className="w-full md:w-auto">
+        <Button disabled={isSubmitting} type="submit" className="w-full md:w-auto flex gap-2">
+          {isSubmitting && <Spinner />}
           Save
         </Button>
       </div>

@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import Spinner from "./spinner";
 
 export default function SignupForm() {
   const {
@@ -92,8 +93,9 @@ export default function SignupForm() {
           <SubmitButton
             aria-disabled={isSubmitting}
             disabled={isSubmitting}
-            className="w-full font-semibold py-3 px-7 text-base hover:bg-primary-light disabled:bg-primary-lightest disabled:cursor-not-allowed disabled:hover:bg-primary-lightest"
+            className="w-full font-semibold flex gap-2 items-center py-3 px-7 text-base hover:bg-primary-light disabled:bg-primary-lightest disabled:cursor-not-allowed disabled:hover:bg-primary-lightest"
           >
+            {isSubmitting && <Spinner />}
             Create new account
           </SubmitButton>
 

@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import Floppy from "./icons/floppy";
+import Spinner from "./spinner";
 
 const formSchema = z.object({
   links: z
@@ -32,7 +33,6 @@ export type FormSchema = z.infer<typeof formSchema>;
 export type LinksFormData = FormSchema;
 
 // TODO: Weird overflow at the bottom of page, increases when a new item is added
-// TODO: loading indicator when form is submitting
 export default function LinksForm() {
   const { toast } = useToast();
   const updateLinks = useStoreContext((state) => state.updateLinks);
@@ -144,8 +144,9 @@ export default function LinksForm() {
         <Button
           disabled={!isLinksFieldsChanged || isSubmitting}
           type="submit"
-          className="w-full md:w-auto"
+          className="w-full md:w-auto flex gap-2"
         >
+          {isSubmitting && <Spinner />}
           Save
         </Button>
       </div>

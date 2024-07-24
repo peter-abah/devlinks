@@ -18,10 +18,11 @@ export default function Navbar() {
   return (
     <header className="pb-4 md:p-6 shrink-0">
       <div className="flex justify-between items-center p-4 pl-6 bg-white rounded-xl">
-        <div className="flex gap-1.5 items-center">
+        <Link href="/" className="flex gap-1.5 items-center">
           <DevlinksLogo width={32} height={32} />
           <DevlinksLogoText width={108} height={21} className="hidden md:block" />
-        </div>
+          <span className="sr-only">devlinks</span>
+        </Link>
 
         <nav>
           <ul className="flex items-center md:gap-4">
