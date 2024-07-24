@@ -1,12 +1,12 @@
 "use client";
 
-import { signIn } from "@/app/(auth)/actions";
 import { LoginFormSchema, loginFormSchema } from "@/app/(auth)/schema";
 import Lock from "@/components/icons/lock";
 import Mail from "@/components/icons/mail";
 import { SubmitButton } from "@/components/submit-button";
 import InputWithIcon from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
+import { signIn } from "@/lib/supabase/actions";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -73,7 +73,7 @@ export default function LoginForm() {
           <SubmitButton
             aria-disabled={isSubmitting}
             disabled={isSubmitting}
-            className="w-full font-semibold py-3 px-7 text-base hover:bg-primary-light disabled:bg-primary-lightest disabled:cursor-not-allowed disabled:hover:bg-primary-lightest"
+            className="w-full font-semibold py-3 px-7 text-base hover:bg-primary-light disabled:cursor-not-allowed disabled:hover:bg-primary-lightest"
           >
             Login
           </SubmitButton>

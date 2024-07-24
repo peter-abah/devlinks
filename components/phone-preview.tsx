@@ -5,6 +5,8 @@ import { useStoreContext } from "@/app/dashboard/store-context";
 import { Platforms } from "@/lib/types";
 import { titleCase } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { useEffect } from "react";
 import PlatformIcon from "./icons/platform-icons";
 import PreviewFrame from "./phone-preview/preview-frame";
 
@@ -28,13 +30,7 @@ export default function PhonePreview() {
       aria-hidden
     >
       <div className="relative w-[307px] h-[631px] px-[34.5px] pt-[63.5px] pb-[53.5px] stack gap-14 items-center">
-        <div className="stack items-center z-10">
-          <div className="w-24 mb-[25px] aspect-square rounded-full bg-no-preview">
-            {/* image */}
-          </div>
-          <div className="w-40 mb-[13px] h-4 bg-no-preview rounded-full">{/* full name */}</div>
-          <div className="w-[72px] h-2 rounded-full rounded-ful bg-no-preview">{/* email */}</div>
-        </div>
+        <ProfilePreview />
 
         <div className="z-10 stack gap-5 w-full">
           {paddedLinks.map((link) => (
@@ -60,5 +56,40 @@ function LinkPreview({ link }: { link?: TLink }) {
     </div>
   ) : (
     <div className="h-11 w-full bg-no-preview rounded-lg">{/* platform */}</div>
+  );
+}
+
+function ProfilePreview() {
+  const { firstName, lastName, profilePicture, email } = useStoreContext((state) => state.profile);
+  const name = [firstName, lastName].join(" ");
+  const url = profilePicture && URL.createObjectURL(profilePicture);
+
+  useEffect(() => {
+    return () => {
+      if (!url) return;
+
+      // revoke object urls to prevent memory leaks
+      URL.revokeObjectURL(url);
+    };
+  }, [url]);
+
+  return (
+    <div className="stack items-center z-10">
+      <div className="w-24 mb-[25px] aspect-square rounded-full relative bg-no-preview overflow-hidden">
+        {url && <Image src={url} fill alt={firstName || ""} />}
+      </div>
+
+      {firstName ? (
+        <p className="text-lg mb-[13px] font-semibold">{name}</p>
+      ) : (
+        <div className="w-40 mb-[13px] h-4 bg-no-preview rounded-full">{/* full name */}</div>
+      )}
+
+      {email ? (
+        <p className="text-sm text-gray">{email}</p>
+      ) : (
+        <div className="w-[72px] h-2 rounded-full rounded-ful bg-no-preview">{/* email */}</div>
+      )}
+    </div>
   );
 }

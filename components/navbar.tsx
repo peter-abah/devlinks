@@ -41,7 +41,7 @@ export default function Navbar() {
 
             <li>
               <NavLink
-                href="profile"
+                href="/dashboard/profile"
                 className={({ pathname }) =>
                   cn(navLinkClassNames.default, {
                     [navLinkClassNames.active]: pathname === "/dashboard/profile",

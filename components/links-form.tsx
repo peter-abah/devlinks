@@ -64,13 +64,14 @@ export default function LinksForm() {
     removeLink(index);
   };
 
+  const onSubmit = (data: FormSchema) => {
+    console.log(data);
+  };
+
   const isLinksChanged = linkFields.length > 0 || deletedLinksIDsFields.length > 0;
 
   return (
-    <form
-      onSubmit={handleSubmit((data) => console.log(data))}
-      className="bg-white grow rounded-xl stack max-h-full"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white grow rounded-xl stack max-h-full">
       <div className="p-6 md:p-10 stack gap-6 grow max-h-full">
         <header className="space-y-2 shrink-0">
           <h1 className="text-2xl md:text-[32px] font-bold">Customize your links</h1>
@@ -89,17 +90,21 @@ export default function LinksForm() {
             + Add new link
           </Button>
 
-          <div className="grow space-y-6 overflow-auto">
-            {linkFields.map((field, index) => (
-              <LinkInput
-                index={index}
-                key={field.id}
-                onRemove={() => onRemoveLink(index)}
-                register={register}
-                control={control}
-              />
-            ))}
-          </div>
+          {linkFields.length > 0 ? (
+            <div className="grow space-y-6 overflow-auto">
+              {linkFields.map((field, index) => (
+                <LinkInput
+                  index={index}
+                  key={field.id}
+                  onRemove={() => onRemoveLink(index)}
+                  register={register}
+                  control={control}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState />
+          )}
 
           {deletedLinksIDsFields.map((field, index) => (
             <input type="hidden" {...register(`deletedLinksIDs.${index}`)} />

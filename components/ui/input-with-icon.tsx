@@ -6,18 +6,22 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   /*
    * Icon is assumed to have a width of 16px
    */
-  icon: ReactNode;
+  icon?: ReactNode;
   errorMessage?: string;
+  containerClassName?: string;
 }
 const InputWithIcon = forwardRef<HTMLInputElement, Props>(
-  ({ icon, errorMessage, className, ...props }, ref) => {
+  ({ icon, errorMessage, className, containerClassName, ...props }, ref) => {
     return (
-      <div className="relative w-full h-fit">
+      <div className={cn("relative w-full h-fit", containerClassName)}>
         {icon && (
           <span className="absolute z-10 top-1/2 -translate-y-1/2 left-4 w-fit h-fit">{icon}</span>
         )}
         <Input
-          className={cn("w-full left-0 pl-11", className, { "border-destructive": !!errorMessage })}
+          className={cn("w-full left-0", className, {
+            "pl-11": !!icon,
+            "border-destructive": !!errorMessage,
+          })}
           {...props}
           ref={ref}
         />

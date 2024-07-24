@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { LoginFormData, SignupFormData } from "./schema";
+import { LoginFormData, SignupFormData } from "../../app/(auth)/schema";
 
 export const signIn = async ({ email, password }: LoginFormData) => {
   const supabase = createClient();

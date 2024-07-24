@@ -1,12 +1,12 @@
 "use client";
 
-import { signUp } from "@/app/(auth)/actions";
 import { SignupFormSchema, signupFormSchema } from "@/app/(auth)/schema";
 import Lock from "@/components/icons/lock";
 import Mail from "@/components/icons/mail";
 import { SubmitButton } from "@/components/submit-button";
 import InputWithIcon from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
+import { signUp } from "@/lib/supabase/actions";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
