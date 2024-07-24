@@ -9,27 +9,65 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          platform: Platforms; // platform: string;
+          platform: Platforms;
           url: string;
           user_id: string;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          platform: string;
+          platform: Platforms;
           url: string;
           user_id?: string;
         };
         Update: {
           created_at?: string;
           id?: number;
-          platform?: string;
+          platform?: Platforms;
           url?: string;
           user_id?: string;
         };
         Relationships: [
           {
             foreignKeyName: "links_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      profiles: {
+        Row: {
+          created_at: string;
+          email: string | null;
+          first_name: string;
+          id: number;
+          last_name: string;
+          profile_image_path: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          email?: string | null;
+          first_name: string;
+          id?: number;
+          last_name: string;
+          profile_image_path: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string | null;
+          first_name?: string;
+          id?: number;
+          last_name?: string;
+          profile_image_path?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "users";

@@ -1,16 +1,9 @@
 import { Tables } from "@/lib/types/supabase";
 import { createStore as createZustandStore } from "zustand";
 
-interface Profile {
-  firstName: string;
-  lastName: string;
-  email: string;
-  profilePicture: File;
-}
-
 export interface StoreProps {
   links: Partial<Tables<"links">>[];
-  profile: Partial<Profile>;
+  profile: Partial<Tables<"profiles"> & { profilePicture: { name: string; url: string } | File }>;
 }
 export interface StoreState extends StoreProps {
   updateLinks: (links: StoreProps["links"]) => void;

@@ -2,13 +2,13 @@
 
 import { StoreState } from "@/app/dashboard/store";
 import { useStoreContext } from "@/app/dashboard/store-context";
+import PlatformIcon from "@/components/icons/platform-icons";
+import PreviewFrame from "@/components/phone-preview/preview-frame";
 import { Platforms } from "@/lib/types";
 import { titleCase } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
-import PlatformIcon from "./icons/platform-icons";
-import PreviewFrame from "./phone-preview/preview-frame";
 
 const NO_OF_LINKS = 5;
 const PLATFORM_COLORS: Record<Platforms, string> = {
@@ -33,8 +33,8 @@ export default function PhonePreview() {
         <ProfilePreview />
 
         <div className="z-10 stack gap-5 w-full">
-          {paddedLinks.map((link) => (
-            <LinkPreview link={link} />
+          {paddedLinks.map((link, index) => (
+            <LinkPreview key={index} link={link} />
           ))}
         </div>
 
@@ -60,27 +60,30 @@ function LinkPreview({ link }: { link?: TLink }) {
 }
 
 function ProfilePreview() {
-  const { firstName, lastName, profilePicture, email } = useStoreContext((state) => state.profile);
-  const name = [firstName, lastName].join(" ");
-  const url = profilePicture && URL.createObjectURL(profilePicture);
+  const { first_name, last_name, profilePicture, email } = useStoreContext(
+    (state) => state.profile
+  );
+  const name = [first_name, last_name].join(" ");
+  const isFile = profilePicture && !("url" in profilePicture);
+  const imgURL = isFile ? URL.createObjectURL(profilePicture) : profilePicture?.url;
 
   useEffect(() => {
     return () => {
-      if (!url) return;
+      if (!imgURL) return;
 
       // revoke object urls to prevent memory leaks
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(imgURL);
     };
-  }, [url]);
+  }, [imgURL]);
 
   return (
     <div className="stack items-center z-10">
-      <div className="w-24 mb-[25px] aspect-square rounded-full relative bg-no-preview overflow-hidden">
-        {url && <Image src={url} fill alt={firstName || ""} />}
+      <div className="w-24 shrink-0 mb-[25px] aspect-square rounded-full relative bg-no-preview overflow-hidden">
+        {imgURL && <Image src={imgURL} fill alt={first_name || profilePicture?.name || ""} />}
       </div>
 
-      {firstName ? (
-        <p className="text-lg mb-[13px] font-semibold">{name}</p>
+      {first_name ? (
+        <p className="text-lg mb-2 font-semibold">{name}</p>
       ) : (
         <div className="w-40 mb-[13px] h-4 bg-no-preview rounded-full">{/* full name */}</div>
       )}

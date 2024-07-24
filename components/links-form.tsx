@@ -4,6 +4,7 @@ import { StoreState } from "@/app/dashboard/store";
 import { useStoreContext } from "@/app/dashboard/store-context";
 import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { updateLinks as updateLinksToDB } from "@/lib/supabase/actions";
 import { Platforms } from "@/lib/types";
 import LinksEmptyImage from "@/public/images/links-empty.png";
@@ -12,7 +13,6 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import { useToast } from "./ui/use-toast";
 
 const formSchema = z.object({
   links: z
@@ -31,6 +31,7 @@ export type FormSchema = z.infer<typeof formSchema>;
 export type LinksFormData = FormSchema;
 
 // TODO: Weird overflow at the bottom of page, increases when a new item is added
+// TODO: loading indicator when form is submitting
 export default function LinksForm() {
   const { toast } = useToast();
   const updateLinks = useStoreContext((state) => state.updateLinks);
