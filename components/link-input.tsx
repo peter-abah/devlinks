@@ -98,7 +98,7 @@ const LINK_PLACEHOLDERS: Record<Platforms | "default", string> = {
   linkedin: "e.g https://www.linkedin.com/in/johnappleseed",
   facebook: "e.g https://www.facebook.com/johnappleseed",
   frontend_mentor: "e.g https://www.frontendmentor.io/profile/johnappleseed",
-  "dev.to": "e.g https://www.frontendmentor.io/profile/johnappleseed",
+  "dev.to": "e.g https://dev.to/johnappleseed",
   codewars: "e.g https://www.codewars.com/users/johnappleseed",
   freeCodeCamp: "e.g https://www.freecodecamp.org/johnappleseed",
   default: "e.g https://www.example.com/johnappleseed",

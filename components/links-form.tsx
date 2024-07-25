@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { updateLinks as updateLinksToDB } from "@/lib/supabase/actions";
 import { Platforms } from "@/lib/types";
+import { titleCase } from "@/lib/utils";
 import LinksEmptyImage from "@/public/images/links-empty.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -16,19 +17,35 @@ import * as z from "zod";
 import Floppy from "./icons/floppy";
 import Spinner from "./spinner";
 
-const formSchema = z.object({
-  links: z
-    .object({
-      id: z.number().optional(),
-      platform: z.nativeEnum(Platforms),
-      url: z
-        .string()
-        .min(1, { message: "Can't be empty" })
-        .url({ message: "Please check the URL" }),
+const formSchema = z
+  .object({
+    links: z
+      .object({
+        id: z.number().optional(),
+        platform: z.nativeEnum(Platforms),
+        url: z
+          .string()
+          .min(1, { message: "Can't be empty" })
+          .url({ message: "Please check the URL" }),
+      })
+      .array(),
+    deletedLinksIDs: z.object({ id: z.number() }).array(),
+  })
+  .superRefine((data, ctx) =>
+    data.links.forEach((link, index) => {
+      if (
+        PLATFORM_LINKS_START_STRING[link.platform].some((startStr) => link.url.startsWith(startStr))
+      ) {
+        return;
+      }
+
+      ctx.addIssue({
+        message: `Enter valid ${titleCase(link.platform)} profile url`,
+        code: z.ZodIssueCode.custom,
+        path: ["links", index, "url"],
+      });
     })
-    .array(),
-  deletedLinksIDs: z.object({ id: z.number() }).array(),
-});
+  );
 export type FormSchema = z.infer<typeof formSchema>;
 export type LinksFormData = FormSchema;
 
@@ -170,3 +187,15 @@ function EmptyState() {
     </div>
   );
 }
+
+const PLATFORM_LINKS_START_STRING = {
+  github: ["https://www.github.com/", "https://github.com/"],
+  youtube: ["https://www.youtube.com/", "https://youtube.com/"],
+  linkedin: ["https://www.linkedin.com/in/", "https://linkedin.com/in/"],
+  facebook: ["https://www.facebook.com/", "https://facebook.com/"],
+  frontend_mentor: ["https://www.frontendmentor.io/profile/", "https://frontendmentor.io/profile/"],
+  "dev.to": ["https://www.dev.to/", "https://dev.to/"],
+  codewars: ["https://www.codewars.com/users/", "https://codewars.com/users/"],
+  freeCodeCamp: ["https://www.freecodecamp.org/", "https://freecodecamp.org/"],
+  default: ["https://"],
+};
