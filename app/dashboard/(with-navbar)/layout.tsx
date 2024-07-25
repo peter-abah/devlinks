@@ -2,8 +2,7 @@ import Navbar from "@/components/navbar";
 import PhonePreview from "@/components/phone-preview";
 import { ReactNode } from "react";
 
-// TODO: Error and notfound state
-export default async function Dashboard({ children }: { children: ReactNode }) {
+export default function Dashboard({ children }: { children: ReactNode }) {
   return (
     <div className="max-h-[984px] min-h-screen overflow-hidden w-full max-w-screen-2xl mx-auto stack">
       <Navbar />

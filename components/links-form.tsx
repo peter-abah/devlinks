@@ -1,7 +1,7 @@
 "use client";
 
 import { StoreState } from "@/app/dashboard/store";
-import { useStoreContext } from "@/app/dashboard/store-context";
+import { useStoreContext, useStoreHydration } from "@/app/dashboard/store-context";
 import LinkInput from "@/components/link-input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -57,19 +57,29 @@ export default function LinksForm() {
   const { serverLinks, links, isLinksChanged } = useStoreContext(
     ({ links, serverLinks, isLinksChanged }) => ({ serverLinks, links, isLinksChanged })
   );
+  const defaultValues = { links: links.length > 0 || isLinksChanged ? links : serverLinks };
 
   const {
     register,
     handleSubmit,
     control,
     getValues,
+    reset,
     watch,
     formState: { isSubmitting },
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
-    defaultValues: { links: links.length > 0 || isLinksChanged ? links : serverLinks },
+    defaultValues,
   });
+
+  // Set form values to values stored in local storage after nextjs ssr
+  const hasStoreHydrated = useStoreHydration();
+  useEffect(() => {
+    if (hasStoreHydrated) {
+      reset(defaultValues);
+    }
+  }, [hasStoreHydrated]);
 
   const {
     fields: linkFields,
@@ -152,7 +162,7 @@ export default function LinksForm() {
           )}
 
           {deletedLinksIDsFields.map((field, index) => (
-            <input type="hidden" {...register(`deletedLinksIDs.${index}`)} />
+            <input type="hidden" key={field.id} {...register(`deletedLinksIDs.${index}`)} />
           ))}
         </div>
       </div>
