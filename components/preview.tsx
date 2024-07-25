@@ -15,7 +15,7 @@ export default function Preview({ links, profile }: Props) {
   const linksToUse = padArray(links || [], 3);
   const picture = profile?.profilePicture;
 
-  const name = [profile?.first_name, profile?.last_name].join(" ");
+  const name = [profile?.first_name, profile?.last_name].join(" ").trim();
 
   return (
     <div className="md:shadow-xl md:py-12 mx-auto max-w-[349px] my-[60px] md:my-[108px] min-h-[500px] rounded-3xl px-14 bg-white stack gap-14">

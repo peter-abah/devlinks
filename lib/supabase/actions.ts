@@ -32,6 +32,7 @@ export const signUp = async ({ email, password }: SignupFormData) => {
   });
 
   if (error) {
+    console.log({ error });
     return [{ field: "root.server", message: "Unable to signup." }];
   }
 
@@ -123,7 +124,7 @@ export const getProfile = async () => {
     throw Error;
   }
 
-  const profile = data ? await transFormProfile(data[0]) : data;
+  const profile = data?.[0] ? await transFormProfile(data[0]) : undefined;
   return { data: profile };
 };
 
