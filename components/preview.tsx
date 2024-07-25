@@ -34,6 +34,7 @@ export default function Preview({ links, profile }: Props) {
         {linksToUse.map((link) =>
           link ? (
             <Link
+              key={link.id}
               href={link.url}
               className="w-full rounded-lg p-4 flex items-center gap-2 text-white"
               style={{ backgroundColor: PLATFORM_COLORS[link.platform] }}
