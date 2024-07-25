@@ -4,9 +4,15 @@ import { transFormProfile } from "@/lib/supabase/actions";
 import { createClient } from "@/lib/supabase/server";
 import { PROFILE_BASE_URL } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import { isUUID } from "validator";
 
 export default async function Page({ params }: { params: { user_id: string } }) {
   const { user_id } = params;
+
+  // Supabase returns an error for uuid fields if a normal string is passed
+  if (!isUUID(user_id)) {
+    return notFound();
+  }
 
   const client = createClient();
   const [{ data: profileRes, error: profileError }, { data: links, error: linksError }] =
